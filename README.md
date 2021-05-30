@@ -8,80 +8,98 @@ The computer should fulfill the following requirements:
 * At least 4 GB of RAM are recommended.
 
 ## Code
-The source code is available in this repository inside the ['src'](https://github.com/CrisesUrv/microaggregation-based_anonymization_tool/tree/master/data_anonymization_tool/src/cat/urv) folder. The code is divided into five packages:
-* *anonymization*: includes the entity and control classes and the implementation of the anonymization algorithms
-* *exception*: includes the exception classes
-* *test*: includes a class with examples on how to use the API calls
-* *main*: includes the runnable main class
-* *utils*: includes different support classes implementing ontology access functions, distance calculators, comparators, a xml reader and a file access manager
+The source code is available in this repository inside the ['src'](https://github.com/anonymProjects/imcd21Project/tree/master/src/anomTrajectories) folder.
 
-The following figure shows the UML class diagram of the main classes
-<img src="img/anonymization.jpg" width="800" />
-
-The source code can be imported to Java IDEs (e.g. Eclipse) by cloning or downloading the project from the [main page](https://github.com/CrisesUrv/microaggregation-based_anonymization_tool) on github.
+The source code can be imported to Java IDEs (e.g. Eclipse) by cloning or downloading the project from the [main page](https://github.com/anonymProjects/imcd21Project) on github.
 
 ## Running
-To run, access the folder where the mAnt.jar file has been stored and execute the following command from the console:
+To run, access the folder ['src'](https://github.com/anonymProjects/imcd21Project/tree/master/src/anomTrajectories) and execute the following tests to obtain the described results:
 ```
-java -jar -Xmx1024m -Xms1024m mAnt.jar dataset_name configuration_file_name
+Main1.java
 ```
-where the 'dataset_name' corresponds to the name of the CSV dataset to be anonymized and the 'configuration_file_name' corresponds to the XML file specifying the configuration parameters for the dataset.
+Executes the centralized microaggregation of the cabs dataset, obtaining the resulting RMSE for k values from 2 to 100 (Fig. 1):
 
-The -Xmx and -Xms parameters specify the amount of memory that will be available for the application. These can be modified according to the size of the dataset and the amount of RAM available in the system.
 
-The resulting anonymized dataset will be stored in the same directory, with the same name as the original dataset but with '\_anom' suffix. In addition, several metrics stating the information loss resulting from the anonymization are provided.
-
-Ejemplo de tabla:
-
-| Attribute name  | data type        |
-| --------------- | ---------------- |
-| Patient_ID      | categoric        |
-| Name            | categoric        |
-| Last1           | categoric        |
-| Last2           | categoric        |
-| Gender          | categoric        |
-| Age             | numeric_discrete |
-| ZipCode         | categoric        |
-| Episode_ID      | categoric        |
-| Diagnosis_IDini | semantic         |
-| Admission_date  | date             |
-| Discharge_date  | date             |
-| Diagnosis_ID    | semantic         |
-
-Semantic attributes (Diagnosis_IDini and Diagosis_ID) are expressed with SNOMED-CT codes. To semantically manage them [[1][2][3]](#Resources), an OWL ontology modeling the domain of this values is needed. This ontology (snomed-ontology.owl) can be generated from the [SNOMED-CT International Edition](https://www.nlm.nih.gov/healthit/snomedct/international.html) (RF2 format) files with the ['Snomed OWL Toolkit'](https://github.com/IHTSDO/snomed-owl-toolkit) tool as follows:
-
-```
-java -jar snomed-owl-toolkit.jar -rf2-to-owl -rf2-snapshot-archives SnomedCT_InternationalRF2.zip
-```   
-
-where 'SnomedCT_InternationalRF2.zip' corresponds to the file name of the RF2 SNOMED-CT release.
-For copyright reasons, the 'snomed-ontology.owl' file is not included in this project.
-
-Two XML configuration files are included to characterize the dataset and its protection: "properties1Snomed.xml", which is configured to use *3*-anonymity on quasi-identifiers and "properties2Snomed.xml", which is configured to use *3*-anonymity on quasi-identifiers and *0.25*-closeness on confidential attributes.
-
-For example, to perform the anonymization with "properties1Snomed.xml", execute the follow command in the console:
+| k   | Mean RMSE |
+| --- | --------- |
+| 2   | 378.502   |
+| 5   | 554.752   |
+| 10  | 659.507   |
+| 15  | 718.276   |
+| 20  | 762.185   |
+| 25  | 794.115   |
+| 30  | 820.920   |
+| 35  | 845.467   |
+| 40  | 868.351   |
+| 45  | 887.904   |
+| 50  | 907.605   |
+| 55  | 928.798   |
+| 60  | 947.203   |
+| 65  | 960.638   |
+| 70  | 977.253   |
+| 75  | 985.628   |
+| 80  | 994.222   |
+| 85  | 1012.450  |
+| 90  | 1024.536  |
+| 95  | 1033.467  |
+| 100 | 1040.726  |
 
 ```
-java -jar -Xmx1024m -Xms1024m ./mAnt.jar ./data_example_snomed.txt ./properties1Snomed.xml
+Main2.java
 ```
-As result, an anonymized dataset named "dataset_example_anom.txt" is generated in the same directory.
+Executes the decentralized microaggregation (trajectory) of the cabs dataset, obtaining the resulting RMSE and the mean number of messages per peer for k values from 2 to 100 (Fig. 4 and Fig. 5):
 
-The second dataset available in the folder corresponds to the [UCI's Adult dataset](https://archive.ics.uci.edu/ml/datasets/Adult). It countains 30,162 complete records of census income information. The attributes it contains are the following:
 
-| Attribute name | data type        |
-| -------------- | ---------------- |
-| age            | numeric_discrete |
-| workclass      | semantic         |
-| fnlwgt         | numeric_discrete |
-| education      | semantic         |
-| education-num  | numeric_discrete |
-| marital-status | semantic         |
-| occupation     | semantic         |
-| relationship   | semantic         |
-| race           | semantic         |
-| sex            | semantic         |
-| capital-gain   | numeric_discrete |
-| capital-loss   | numeric_discrete |
-| hours-per-week | numeric_discrete |
-| native-country | semantic         |
-| prediction     | categoric        |
+| k   | Mean RMSE | Mean # messages per peer |
+| --- | --------- | ------------------------ |
+| 2   | 829.011   | 2.997                    |
+| 5   | 1249.403  | 4.844                    |
+| 10  | 1517.170  | 5.577                    |
+| 15  | 1670.018  | 6.078                    |
+| 20  | 1790.866  | 6.933                    |
+| 25  | 1888.999  | 7.873                    |
+| 30  | 1978.592  | 8.387                    |
+| 35  | 2037.743  | 7.984                    |
+| 40  | 2090.358  | 10.816                   |
+| 45  | 2147.086  | 11.608                   |
+| 50  | 2215.658  | 13.439                   |
+| 55  | 2253.932  | 14.753                   |
+| 60  | 2301.758  | 17.588                   |
+| 65  | 2352.015  | 20.827                   |
+| 70  | 2384.932  | 24.090                   |
+| 75  | 2440.204  | 26.567                   |
+| 80  | 2463.530  | 27.819                   |
+| 85  | 2488.998  | 33.101                   |
+| 90  | 2530.928  | 34.594                   |
+| 95  | 2563.044  | 36.690                   |
+| 100 | 2607.443  | 39.814                   |
+
+```
+Main3.java
+```
+Executes the decentralized microaggregation (centroid) of the cabs dataset, obtaining the resulting RMSE and the mean number of messages per peer for k values from 2 to 100 (Fig. 4 and Fig. 5):
+
+
+| k   | Mean RMSE | Mean # messages per peer |
+| --- | --------- | ------------------------ |
+| 2   | 1117.484  | 11.523                   |
+| 5   | 1427.489  | 15.271                   |
+| 10  | 1663.444  | 15.161                   |
+| 15  | 1818.147  | 14.762                   |
+| 20  | 1932.335  | 15.386                   |
+| 25  | 2025.659  | 15.945                   |
+| 30  | 2112.497  | 15.791                   |
+| 35  | 2154.031  | 15.288                   |
+| 40  | 2217.400  | 18.178                   |
+| 45  | 2264.410  | 19.339                   |
+| 50  | 2327.775  | 21.141                   |
+| 55  | 2376.741  | 23.038                   |
+| 60  | 2425.234  | 25.284                   |
+| 65  | 2447.926  | 28.777                   |
+| 70  | 2508.355  | 32.536                   |
+| 75  | 2546.443  | 35.395                   |
+| 80  | 2579.363  | 38.386                   |
+| 85  | 2590.722  | 41.734                   |
+| 90  | 2617.526  | 43.599                   |
+| 95  | 2658.882  | 45.743                   |
+| 100 | 2695.587  | 51.680                   |
