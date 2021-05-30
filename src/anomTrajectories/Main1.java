@@ -24,7 +24,6 @@ public class Main1 {
 		Functions.calculateDistanceTrajectory(trajectories);
 		Functions.calculateTimeTrajectory(trajectories);
 		
-		
 		//Filter trajectories inside a zone of San Francisco
 		Functions.filterCoordinatesInsideQuadrant(trajectories);
 		

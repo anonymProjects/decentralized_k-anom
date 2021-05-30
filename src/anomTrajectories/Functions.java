@@ -592,7 +592,7 @@ public class Functions {
 		totalPoints = 0;
 		for(Peer peer:peers) {
 			trajectory = peer.getTrayecto();
-			time = trajectory.getTiempoInicio();
+			time = trajectory.getTimeInitial();
 			timestamp = new Timestamp(time*1000);
 			calendar.setTimeInMillis(timestamp.getTime());
 			day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -688,7 +688,7 @@ public class Functions {
 		//Treu dissabte(6) i diumenge(0), es queda amb els trayectes de dilluns a divendres
 		calendar.setTimeZone(TimeZone.getTimeZone("America/Los_Angeles"));
 		for(Trajectory trayecto:trajectories) {
-			time = trayecto.getTiempoInicio();
+			time = trayecto.getTimeInitial();
 			timestamp = new Timestamp(time*1000);
 			calendar.setTimeInMillis(timestamp.getTime());
 			diaSem = calendar.get(Calendar.DAY_OF_WEEK);
@@ -712,7 +712,7 @@ public class Functions {
 		//0-Sunday, 1-Monday, 2-Tuesday, 3-Wednesday, 4-Thursday, 5-Friday, 6-Saturday 
 		calendar.setTimeZone(TimeZone.getTimeZone("America/Los_Angeles"));
 		for(Trajectory trayecto:trajectories) {
-			time = trayecto.getTiempoInicio();
+			time = trayecto.getTimeInitial();
 			timestamp = new Timestamp(time*1000);
 			calendar.setTimeInMillis(timestamp.getTime());
 			diaSem = calendar.get(Calendar.DAY_OF_WEEK);
@@ -733,7 +733,7 @@ public class Functions {
 		
 		calendar.setTimeZone(TimeZone.getTimeZone("America/Los_Angeles"));
 		for(Trajectory trayecto:trayectos){
-			time1 = trayecto.getTiempoInicio();
+			time1 = trayecto.getTimeInitial();
 			for(Coordinate2 coordenada:trayecto.coordinate){
 				time = coordenada.time;
 				timestamp = new Timestamp(time*1000);
@@ -818,7 +818,7 @@ public class Functions {
 		
 		calendar.setTimeZone(TimeZone.getTimeZone("America/Los_Angeles"));
 		for(Trajectory trayecto:trajectories){
-			time = trayecto.getTiempoInicio();
+			time = trayecto.getTimeInitial();
 			timestamp = new Timestamp(time*1000);
 			calendar.setTimeInMillis(timestamp.getTime());
 			dia = calendar.get(Calendar.DAY_OF_MONTH);
@@ -838,14 +838,14 @@ public class Functions {
 		
 		totalCoordinates = 0;
 		for(Trajectory trayecto:trajectory){
-			totalCoordinates += trayecto.getNumCoordenadas();
+			totalCoordinates += trayecto.getNumCoordinates();
 		}
 		mean = (double)totalCoordinates / (double)trajectory.size();
 		System.out.println("Mean coordinates by trajectory: " + truncate(mean, 2));
 		
 		totalCoordinates = 0;
 		for(Trajectory trayecto:trajectory){
-			partial = (trayecto.getNumCoordenadas() - mean);
+			partial = (trayecto.getNumCoordinates() - mean);
 			totalCoordinates += partial * partial;
 		}
 		deviation = Math.sqrt(totalCoordinates / trajectory.size());
@@ -883,7 +883,7 @@ public class Functions {
 		ArrayList<Trajectory>trayectosFiltrado = new ArrayList<>();
 		
 		for(Trajectory trayecto:trajectories){
-			if(trayecto.getNumCoordenadas() >= numCoordinates){
+			if(trayecto.getNumCoordinates() >= numCoordinates){
 				trayectosFiltrado.add(trayecto);
 			}
 		}
@@ -897,7 +897,7 @@ public class Functions {
 		double dist;
 		
 		for(Trajectory trayecto:trajectories){
-			dist = trayecto.getDistanciaAcumulada();
+			dist = trayecto.getDistanceAcum();
 			if(dist >= distance){
 				trayectosFiltrado.add(trayecto);
 			}

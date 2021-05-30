@@ -241,18 +241,18 @@ public class Trajectory {
 	public String getQuadrantsInterpolatedString(int gridIndex) {
 		String s = "";
 		
-		for(GridCoordinate cuadricula:this.interpolatedQuadrants.get(gridIndex)) {
-			s += cuadricula;
+		for(GridCoordinate quadrant:this.interpolatedQuadrants.get(gridIndex)) {
+			s += quadrant;
 		}
 		
 		return s;
 	}
 	
-	public String getCuadriculasInterpoladasIniFinString(int indexCuadricula) {
+	public String getQuadrantsInterpoladasIniFinString(int indexQuadrant) {
 		String s = "";
 		
-		s += this.interpolatedQuadrants.get(indexCuadricula).get(0);
-		s += this.interpolatedQuadrants.get(indexCuadricula).get(this.interpolatedQuadrants.size()-1);
+		s += this.interpolatedQuadrants.get(indexQuadrant).get(0);
+		s += this.interpolatedQuadrants.get(indexQuadrant).get(this.interpolatedQuadrants.size()-1);
 		
 		return s;
 	}
@@ -261,15 +261,15 @@ public class Trajectory {
 		return coordinate;
 	}
 	
-	public int getNumCoordenadas(){
+	public int getNumCoordinates(){
 		return this.coordinate.size();
 	}
 
-	public Coordinate2 getInicio(){
+	public Coordinate2 getIni(){
 		return coordinate.get(0);
 	}
 	
-	public Coordinate2 getFinal(){
+	public Coordinate2 getEnd(){
 		return coordinate.get(coordinate.size()-1);
 	}
 	
@@ -281,10 +281,10 @@ public class Trajectory {
 		return this.idCab;
 	}
 	
-	public double calculateDistanceStartEnd(){	//en metros
+	public double calculateDistanceStartEnd(){	//meters
 		double dist;
 		
-		dist = getInicio().distancia(getFinal(), Coordinate2.distanceFast);
+		dist = getIni().distancia(getEnd(), Coordinate2.distanceFast);
 		//dist = getInicio().distancia(getFinal(), Coordenada.distanciaHaversine);
 		//dist = getInicio().distanciaVincenty(getFinal());
 		//dist = VincentyDistanceCalculator.getDistance(
@@ -293,7 +293,7 @@ public class Trajectory {
 		return dist;
 	}
 	
-	public double calculateAcumuatedDistanceStartEnd(){	//en metros
+	public double calculateAcumuatedDistanceStartEnd(){	//meters
 		double dist, distTotal;
 		Coordinate2 c1, c2;
 		
@@ -331,7 +331,7 @@ public class Trajectory {
 		this.distanceAcum = totalDist;
 	}
 	
-	public void calculateAcumulatedDistanceInCentroidsCuadriculas() {
+	public void calculateAcumulatedDistanceInCentroidsQuadrants() {
 		double dist, totalDist;
 		
 		totalDist = 0;
@@ -360,10 +360,10 @@ public class Trajectory {
 		this.velocity = this.distanceAcum / this.acumulatedTime;
 	}
 	
-	public int calculateTime(){	//en segundos
+	public int calculateTime(){	//seconds
 		int tiempo;
 		
-		tiempo = (int)(getFinal().time - getInicio().time);
+		tiempo = (int)(getEnd().time - getIni().time);
 		
 		return tiempo;
 	}
@@ -382,7 +382,7 @@ public class Trajectory {
 		return acumTime;
 	}
 	
-	public int getAcumulatedTimeInCentroidsCusdriculas() {	//In secs
+	public int getAcumulatedTimeInCentroidsQuadrants() {	//In secs
 		long time1, time2;
 		int acumTime;
 		
@@ -397,67 +397,67 @@ public class Trajectory {
 	}
 	
 	public long timeMean() {
-		long tiempo;
+		long time;
 		
-		tiempo = getFinal().time + getInicio().time;
-		tiempo /= 2;
+		time = getEnd().time + getIni().time;
+		time /= 2;
 		
-		return tiempo;
-	}
-
-	public double getDistancia() {
-		return distance;
-	}
-
-	public void setDistance(double distancia) {
-		this.distance = distancia;
-	}
-
-	public double getDistanciaAcumulada() {
-		return distanceAcum;
-	}
-
-	public void setAcumulatedDistance(double distanciaAcum) {
-		this.distanceAcum = distanciaAcum;
-	}
-
-	public int getTiempo() {
 		return time;
 	}
 
-	public void setTime(int tiempo) {
-		this.time = tiempo;
+	public double getDistance() {
+		return distance;
 	}
 
-	public boolean isConductor() {
+	public void setDistance(double distance) {
+		this.distance = distance;
+	}
+
+	public double getDistanceAcum() {
+		return distanceAcum;
+	}
+
+	public void setAcumulatedDistance(double distanceAcum) {
+		this.distanceAcum = distanceAcum;
+	}
+
+	public int getTime() {
+		return time;
+	}
+
+	public void setTime(int time) {
+		this.time = time;
+	}
+
+	public boolean isDriver() {
 		return driver;
 	}
 
-	public void setConductor(boolean conductor) {
-		this.driver = conductor;
+	public void setDriver(boolean driver) {
+		this.driver = driver;
 	}
 	
-	public long getTiempoInicio(){
+	public long getTimeInitial(){
 		return coordinate.get(0).time;
 	}
 	
-	public int[]buscaMatchingIntermedio(Trajectory trayecto){
-		Coordinate2 inicio, fin;
-		int indicesMatching[] = new int[2];
+	public int[]searchMatchingIntermediate(Trajectory trajectory){
+		Coordinate2 ini, end;
+		int indexMatching[] = new int[2];
 		
-		inicio = trayecto.getInicio();
-		fin = trayecto.getFinal();
-		indicesMatching[0] = buscaMasCercano(inicio);
-		indicesMatching[1] = buscaMasCercano(indicesMatching[0], fin);
+		ini = trajectory.getIni();
+		end = trajectory.getEnd();
+		indexMatching[0] = searchCLosest(ini);
+		indexMatching[1] = searchClosest(indexMatching[0], end);
 		
-		if(indicesMatching[0] >= indicesMatching[1]){
+		if(indexMatching[0] >= indexMatching[1]){
 			return null;
 		}
 		
-		return indicesMatching;
+		return indexMatching;
 	}
 	
-	public int[]rellenaIndicesMatching(){
+	public int[]fillIndexMatching(){
 		int indicesMatching[] = new int[2];
 		
 		indicesMatching[0] = 0;
@@ -466,73 +466,73 @@ public class Trajectory {
 		return indicesMatching;
 	}
 	
-	private int buscaMasCercano(Coordinate2 coordenada){
-		int indiceMasCercano;
+	private int searchCLosest(Coordinate2 coord){
+		int indexClosest;
 		double dist, minDist;
 		
-		indiceMasCercano = 0;
+		indexClosest = 0;
 		minDist = Double.MAX_VALUE;
 		for(int i=0; i<coordinate.size(); i++){
-			dist = coordinate.get(i).distancia(coordenada, Coordinate2.distanceFast);
+			dist = coordinate.get(i).distancia(coord, Coordinate2.distanceFast);
 			//dist = coordenadas.get(i).distancia(coordenada, Coordenada.distanciaHaversine);
 			if(dist < minDist){
-				indiceMasCercano = i;
+				indexClosest = i;
 				minDist = dist;
 			}
 		}
 		
-		return indiceMasCercano;
+		return indexClosest;
 	}
 	
-	private int buscaMasCercano(int desde, Coordinate2 coordenada){
-		int indiceMasCercano;
+	private int searchClosest(int from, Coordinate2 coord){
+		int indexClosest;
 		double dist, minDist;
 		
-		indiceMasCercano = 0;
+		indexClosest = 0;
 		minDist = Double.MAX_VALUE;
-		for(int i=desde; i<coordinate.size(); i++){
-			dist = coordinate.get(i).distancia(coordenada, Coordinate2.distanceFast);
+		for(int i=from; i<coordinate.size(); i++){
+			dist = coordinate.get(i).distancia(coord, Coordinate2.distanceFast);
 			//dist = coordenadas.get(i).distancia(coordenada, Coordenada.distanciaHaversine);
 			if(dist < minDist){
-				indiceMasCercano = i;
+				indexClosest = i;
 				minDist = dist;
 			}
 		}
 		
-		return indiceMasCercano;
+		return indexClosest;
 	}
 	
 	public double distanceAnt(Trajectory other) {
 		double dist, RMSE, indexThis, indexOther;
-		int numCoordenadasNew, indexInt;
+		int numCoordinatesNew, indexInt;
 		double gapThis, gapOther, partial;
-		Coordinate2 coordenadaThis, coordenadaOther;
+		Coordinate2 coordinateThis, coordinateOther;
 		double velocity;
 		
-		numCoordenadasNew = (int)Math.round(((double)this.coordinate.size() + (double)other.coordinate.size()) / 2);
-		gapThis = (double)this.coordinate.size() / (double)numCoordenadasNew;
-		gapOther = (double)other.coordinate.size() / (double)numCoordenadasNew;
+		numCoordinatesNew = (int)Math.round(((double)this.coordinate.size() + (double)other.coordinate.size()) / 2);
+		gapThis = (double)this.coordinate.size() / (double)numCoordinatesNew;
+		gapOther = (double)other.coordinate.size() / (double)numCoordinatesNew;
 		
 		partial = 0.0;
 		indexThis = indexOther = 0;
-		for(int i=0; i<numCoordenadasNew; i++) {
+		for(int i=0; i<numCoordinatesNew; i++) {
 			indexInt = (int) Math.round(indexThis);
 			if(indexInt >= this.coordinate.size()) {
 				indexInt = this.coordinate.size()-1;
 			}
-			coordenadaThis = this.coordinate.get(indexInt);
+			coordinateThis = this.coordinate.get(indexInt);
 			indexInt = (int) Math.round(indexOther);
 			if(indexInt >= other.coordinate.size()) {
 				indexInt = other.coordinate.size()-1;
 			}
-			coordenadaOther = other.coordinate.get(indexInt);
+			coordinateOther = other.coordinate.get(indexInt);
 			velocity = (this.velocity + other.velocity) / 2;
-			dist = coordenadaThis.distance(coordenadaOther, velocity);
+			dist = coordinateThis.distance(coordinateOther, velocity);
 			partial += (dist*dist);
 			indexThis += gapThis;
 			indexOther += gapOther;
 		}
-		RMSE = partial / numCoordenadasNew;
+		RMSE = partial / numCoordinatesNew;
 		RMSE = Math.sqrt(RMSE);
 		
 		return RMSE;
@@ -540,61 +540,61 @@ public class Trajectory {
 	
 	public double distanceTMD(Trajectory other) {
 		double dist, TMD, indexThis, indexOther;
-		int numCoordenadasNew, indexInt;
+		int numCoordinatesNew, indexInt;
 		double gapThis, gapOther, partial;
-		Coordinate2 coordenadaThis, coordenadaOther;
+		Coordinate2 coordinateThis, coordinateOther;
 		double velocity;
 		
-		numCoordenadasNew = (int)Math.round(((double)this.coordinate.size() + (double)other.coordinate.size()) / 2);
-		gapThis = (double)this.coordinate.size() / (double)numCoordenadasNew;
-		gapOther = (double)other.coordinate.size() / (double)numCoordenadasNew;
+		numCoordinatesNew = (int)Math.round(((double)this.coordinate.size() + (double)other.coordinate.size()) / 2);
+		gapThis = (double)this.coordinate.size() / (double)numCoordinatesNew;
+		gapOther = (double)other.coordinate.size() / (double)numCoordinatesNew;
 		
 		partial = 0.0;
 		indexThis = indexOther = 0;
-		for(int i=0; i<numCoordenadasNew; i++) {
+		for(int i=0; i<numCoordinatesNew; i++) {
 			indexInt = (int) Math.round(indexThis);
 			if(indexInt >= this.coordinate.size()) {
 				indexInt = this.coordinate.size()-1;
 			}
-			coordenadaThis = this.coordinate.get(indexInt);
+			coordinateThis = this.coordinate.get(indexInt);
 			indexInt = (int) Math.round(indexOther);
 			if(indexInt >= other.coordinate.size()) {
 				indexInt = other.coordinate.size()-1;
 			}
-			coordenadaOther = other.coordinate.get(indexInt);
+			coordinateOther = other.coordinate.get(indexInt);
 			velocity = (this.velocity + other.velocity) / 2;
-			dist = coordenadaThis.distance(coordenadaOther, velocity);
+			dist = coordinateThis.distance(coordinateOther, velocity);
 			partial += dist;
 			indexThis += gapThis;
 			indexOther += gapOther;
 		}
-		TMD = partial / numCoordenadasNew;
+		TMD = partial / numCoordinatesNew;
 		
 		return TMD;
 	}
 	
 	public double normalizedTrajectoryDistance(Trajectory other) {
 		double dist, partial, RMSE;
-		Trajectory nuevoTrayecto, baseTrayecto;
+		Trajectory newTrajectory, baseTrajectory;
 		
 		//First convert the smallest trajectory
 		//in order to have the same number of coordinates than the greatest trajectory 
 		if(this.coordinate.size() > other.coordinate.size()) {
-			nuevoTrayecto = this.convert(other);
-			baseTrayecto = this;
+			newTrajectory = this.convert(other);
+			baseTrajectory = this;
 		}
 		else {
-			nuevoTrayecto = other.convert(this);
-			baseTrayecto = other;
+			newTrajectory = other.convert(this);
+			baseTrajectory = other;
 		}
 		
 		partial = 0.0;
-		for(int i=0; i<baseTrayecto.coordinate.size(); i++) {
-			dist = baseTrayecto.coordinate.get(i).distanceFast(nuevoTrayecto.getCoordenada(i));
+		for(int i=0; i<baseTrajectory.coordinate.size(); i++) {
+			dist = baseTrajectory.coordinate.get(i).distanceFast(newTrajectory.getCoordenada(i));
 //			dist = baseTrayecto.coordenadas.get(i).distanceHaversine(nuevoTrayecto.getCoordenada(i));
 			partial += (dist*dist);
 		}
-		RMSE = partial / baseTrayecto.coordinate.size();
+		RMSE = partial / baseTrajectory.coordinate.size();
 		RMSE = Math.sqrt(RMSE);
 		
 		return RMSE;
@@ -616,8 +616,8 @@ public class Trajectory {
 	}
 	
 	public Trajectory convertAnt(Trajectory other) {
-		ArrayList<Coordinate2>coordenadasNuevas;
-		Coordinate2 coordenada;
+		ArrayList<Coordinate2>coordinatesNew;
+		Coordinate2 coordinate;
 		double meters, bearing, vel;
 		int indexSection;
 		Section section;
@@ -625,17 +625,17 @@ public class Trajectory {
 		int secs;
 		boolean ok;
 		
-		coordenadasNuevas = new ArrayList<Coordinate2>();
+		coordinatesNew = new ArrayList<Coordinate2>();
 		//First coordinate
-		time1 = this.getTiempoInicio();
-		time2 = other.getTiempoInicio();
+		time1 = this.getTimeInitial();
+		time2 = other.getTimeInitial();
 		secs = (int)Math.abs(time1 - time2);
 		vel = other.sections.get(0).velocity;
 		meters = vel * secs;
-		bearing = this.getInicio().CalculateBearing(other.getInicio());
-		coordenada = Coordinate2.CalculateDestinationLocation(other.getInicio(), bearing, meters);
-		coordenadasNuevas.add(coordenada);
-		Trajectory trayecto;
+		bearing = this.getIni().CalculateBearing(other.getIni());
+		coordinate = Coordinate2.CalculateDestinationLocation(other.getIni(), bearing, meters);
+		coordinatesNew.add(coordinate);
+		Trajectory trajectory;
 		
 		//rest of coordinates
 		indexSection = 0;
@@ -648,8 +648,8 @@ public class Trajectory {
 			ok = false;
 			while(!ok) {
 				if(meters <= section.restMeters) {
-					coordenada = Coordinate2.CalculateDestinationLocation(coordenada, section.bearing, meters);
-					coordenadasNuevas.add(coordenada);
+					coordinate = Coordinate2.CalculateDestinationLocation(coordinate, section.bearing, meters);
+					coordinatesNew.add(coordinate);
 					section.restMeters -= meters;
 					ok = true;
 				}
@@ -662,14 +662,14 @@ public class Trajectory {
 			}
 		}
 		
-		trayecto = new Trajectory(coordenadasNuevas);
+		trajectory = new Trajectory(coordinatesNew);
 		
-		return trayecto;
+		return trajectory;
 	}
 	
 	public Trajectory convert(Trajectory other) {
-		ArrayList<Coordinate2>coordenadasNuevas;
-		Coordinate2 coordenada;
+		ArrayList<Coordinate2>coordinateNew;
+		Coordinate2 coordinate;
 		double meters, bearing, vel1, vel2;
 		int indexSection;
 		Section sectionBase, sectionOther;
@@ -678,19 +678,19 @@ public class Trajectory {
 		boolean ok;
 		Trajectory trayecto;
 		
-		coordenadasNuevas = new ArrayList<Coordinate2>();
+		coordinateNew = new ArrayList<Coordinate2>();
 		this.calculateSections();
 		other.calculateSections();
 		//First coordinate
-		time1 = this.getTiempoInicio();
-		time2 = other.getTiempoInicio();
+		time1 = this.getTimeInitial();
+		time2 = other.getTimeInitial();
 		secs = (int)Math.abs(time1 - time2);
 		vel1 = other.sections.get(0).velocity;
 		vel2 = this.sections.get(0).velocity;
 		meters = ((vel1 + vel2) / 2) * secs;
-		bearing = this.getInicio().CalculateBearing(other.getInicio());
-		coordenada = Coordinate2.CalculateDestinationLocation(other.getInicio(), bearing, meters);
-		coordenadasNuevas.add(coordenada);
+		bearing = this.getIni().CalculateBearing(other.getIni());
+		coordinate = Coordinate2.CalculateDestinationLocation(other.getIni(), bearing, meters);
+		coordinateNew.add(coordinate);
 		
 		//rest of coordinates
 		indexSection = 0;
@@ -702,8 +702,8 @@ public class Trajectory {
 			ok = false;
 			while(!ok) {
 				if(meters <= sectionOther.restMeters || i == this.sections.size()-1) {
-					coordenada = Coordinate2.CalculateDestinationLocation(coordenada, sectionOther.bearing, meters);
-					coordenadasNuevas.add(coordenada);
+					coordinate = Coordinate2.CalculateDestinationLocation(coordinate, sectionOther.bearing, meters);
+					coordinateNew.add(coordinate);
 					sectionOther.restMeters -= meters;
 					ok = true;
 				}
@@ -716,14 +716,14 @@ public class Trajectory {
 			}
 		}
 		
-		trayecto = new Trajectory(coordenadasNuevas);
+		trayecto = new Trajectory(coordinateNew);
 		
 		return trayecto;
 	}
 	
-	public Trajectory convertCentroidsCuadriculas(Trajectory other) {
-		ArrayList<Coordinate2>coordenadasNuevas;
-		Coordinate2 coordenada;
+	public Trajectory convertCentroidsQuadrants(Trajectory other) {
+		ArrayList<Coordinate2>coordinatesNew;
+		Coordinate2 coordinate;
 		double meters, bearing, vel1, vel2;
 		int indexSection;
 		Section sectionBase, sectionOther;
@@ -736,10 +736,10 @@ public class Trajectory {
 			return this.convertCentroidsCuadriculasNTo1(other);
 		}
 		
-		coordenadasNuevas = new ArrayList<Coordinate2>();
+		coordinatesNew = new ArrayList<Coordinate2>();
 		//First coordinate
-		this.calculateSectionsCentroidsCuadriculas();
-		other.calculateSectionsCentroidsCuadriculas();
+		this.calculateSectionsCentroidsQuadrants();
+		other.calculateSectionsCentroidsQuadrants();
 		time1 = this.sectionsQuadrants.get(0).ini.time;
 		time2 = other.sectionsQuadrants.get(0).ini.time;
 		secs = (int)Math.abs(time1 - time2);
@@ -747,8 +747,8 @@ public class Trajectory {
 		vel2 = this.sectionsQuadrants.get(0).velocity;
 		meters = ((vel1 + vel2) / 2) * secs;
 		bearing = this.sectionsQuadrants.get(0).ini.CalculateBearing(other.sectionsQuadrants.get(0).ini);
-		coordenada = Coordinate2.CalculateDestinationLocation(other.sectionsQuadrants.get(0).ini, bearing, meters);
-		coordenadasNuevas.add(coordenada);
+		coordinate = Coordinate2.CalculateDestinationLocation(other.sectionsQuadrants.get(0).ini, bearing, meters);
+		coordinatesNew.add(coordinate);
 		
 		//rest of coordinates
 		indexSection = 0;
@@ -760,8 +760,8 @@ public class Trajectory {
 			ok = false;
 			while(!ok) {
 				if(meters <= sectionOther.restMeters || i == this.sectionsQuadrants.size()-1) {
-					coordenada = Coordinate2.CalculateDestinationLocation(coordenada, sectionOther.bearing, meters);
-					coordenadasNuevas.add(coordenada);
+					coordinate = Coordinate2.CalculateDestinationLocation(coordinate, sectionOther.bearing, meters);
+					coordinatesNew.add(coordinate);
 					sectionOther.restMeters -= meters;
 					ok = true;
 				}
@@ -776,22 +776,22 @@ public class Trajectory {
 			}
 		}
 		
-		trayecto = new Trajectory(coordenadasNuevas);
+		trayecto = new Trajectory(coordinatesNew);
 		
 		return trayecto;
 	}
 	
 	public Trajectory convertCentroidsCuadriculasNTo1(Trajectory other) {
-		ArrayList<Coordinate2>coordenadasNuevas;
-		Coordinate2 coordenada, coordOther;
+		ArrayList<Coordinate2>coordinatesNew;
+		Coordinate2 coordinate, coordOther;
 		double meters, bearing, vel1, vel2;
 		double time1, time2;
 		int secs;
 		boolean ok;
-		Trajectory trayecto;
+		Trajectory trajectory;
 		
 		coordOther = other.centroidsQuadrants.get(0);	//there is only one coordinate
-		coordenadasNuevas = new ArrayList<Coordinate2>();
+		coordinatesNew = new ArrayList<Coordinate2>();
 		for(Coordinate2 coordThis:this.centroidsQuadrants) {
 			time1 = coordThis.time;
 			time2 = coordOther.time;
@@ -800,13 +800,13 @@ public class Trajectory {
 			vel2 = other.velocity;
 			meters = ((vel1 + vel2) / 2) * secs;
 			bearing = coordThis.CalculateBearing(coordOther);
-			coordenada = Coordinate2.CalculateDestinationLocation(coordOther, bearing, meters);
-			coordenadasNuevas.add(coordenada);
+			coordinate = Coordinate2.CalculateDestinationLocation(coordOther, bearing, meters);
+			coordinatesNew.add(coordinate);
 		}
 		
-		trayecto = new Trajectory(coordenadasNuevas);
+		trajectory = new Trajectory(coordinatesNew);
 		
-		return trayecto;
+		return trajectory;
 	}
 	
 	public void calculateSections() {
@@ -824,7 +824,7 @@ public class Trajectory {
 		}
 	}
 	
-	public void calculateSectionsCentroidsCuadriculas() {
+	public void calculateSectionsCentroidsQuadrants() {
 		Section section;
 		double totalTime;
 		
@@ -833,287 +833,287 @@ public class Trajectory {
 			section = new Section(this.centroidsQuadrants.get(i), this.centroidsQuadrants.get(i+1));
 			this.sectionsQuadrants.add(section);
 		}
-		totalTime = this.getAcumulatedTimeInCentroidsCusdriculas();
+		totalTime = this.getAcumulatedTimeInCentroidsQuadrants();
 		for(Section sec:sectionsQuadrants) {
 			sec.timeProportion = (double)sec.seconds / totalTime;
 		}
 	}
 	
-	public static Trajectory aggregateCoordinates(ArrayList<Trajectory>trayectos) {
-		Trajectory trayecto, nuevoTrayecto, baseTrayecto;
-		int maxNumCoord, indexTrayectoBase;
-		ArrayList<Trajectory> nuevosTrayectos;
+	public static Trajectory aggregateCoordinates(ArrayList<Trajectory>trajectories) {
+		Trajectory trajectory, newTrajectory, baseTrajectory;
+		int maxNumCoord, indexTrajectoryBase;
+		ArrayList<Trajectory> newTrajectories;
 		ArrayList<Coordinate2>aggregatedCoords;
-		ArrayList<Coordinate2>coordenadas;
+		ArrayList<Coordinate2>coordinates;
 		
 		//First convert the smallest trajectories
 		//in order to have the same number of coordinates than the greatest trajectory
 		//In the conversion the distance is normalized by the time
-		baseTrayecto = trayectos.get(0);
-		maxNumCoord = indexTrayectoBase = 0;
-		for(int i=0; i<trayectos.size(); i++) {
-			trayecto = trayectos.get(i);
-			if(trayecto.coordinate.size() > maxNumCoord) {
-				maxNumCoord = trayecto.coordinate.size();
-				baseTrayecto = trayecto;
-				indexTrayectoBase = i;
+		baseTrajectory = trajectories.get(0);
+		maxNumCoord = indexTrajectoryBase = 0;
+		for(int i=0; i<trajectories.size(); i++) {
+			trajectory = trajectories.get(i);
+			if(trajectory.coordinate.size() > maxNumCoord) {
+				maxNumCoord = trajectory.coordinate.size();
+				baseTrajectory = trajectory;
+				indexTrajectoryBase = i;
 			}
 		}
 		
-		nuevosTrayectos = new ArrayList<Trajectory>();
-		baseTrayecto.coordinateNormalized = baseTrayecto.coordinate;
-		nuevosTrayectos.add(baseTrayecto);
-		for(int i=0; i<trayectos.size(); i++) {
-			if(indexTrayectoBase != i) {
-				trayecto = trayectos.get(i);
-				nuevoTrayecto = baseTrayecto.convert(trayecto);
-				trayecto.coordinateNormalized = nuevoTrayecto.coordinate;
-				nuevosTrayectos.add(nuevoTrayecto);
+		newTrajectories = new ArrayList<Trajectory>();
+		baseTrajectory.coordinateNormalized = baseTrajectory.coordinate;
+		newTrajectories.add(baseTrajectory);
+		for(int i=0; i<trajectories.size(); i++) {
+			if(indexTrajectoryBase != i) {
+				trajectory = trajectories.get(i);
+				newTrajectory = baseTrajectory.convert(trajectory);
+				trajectory.coordinateNormalized = newTrajectory.coordinate;
+				newTrajectories.add(newTrajectory);
 			}
 		}
 		
-		coordenadas = new ArrayList<Coordinate2>();
+		coordinates = new ArrayList<Coordinate2>();
 		aggregatedCoords = new ArrayList<Coordinate2>();
-		for(int i=0; i<baseTrayecto.coordinate.size(); i++) {
-			for(int j=0; j<nuevosTrayectos.size(); j++) {
-				trayecto = nuevosTrayectos.get(j);
-				coordenadas.add(trayecto.coordinate.get(i));
+		for(int i=0; i<baseTrajectory.coordinate.size(); i++) {
+			for(int j=0; j<newTrajectories.size(); j++) {
+				trajectory = newTrajectories.get(j);
+				coordinates.add(trajectory.coordinate.get(i));
 			}
-			aggregatedCoords.add(Coordinate2.calculateCentroid(coordenadas));
-			coordenadas.clear();
+			aggregatedCoords.add(Coordinate2.calculateCentroid(coordinates));
+			coordinates.clear();
 		}
 		
 		return new Trajectory(aggregatedCoords, true, "", 0);
 	}
 	
-	public static Trajectory aggregateCentroids(ArrayList<Trajectory>trayectos) {
-		Trajectory trayecto, nuevoTrayecto, baseTrayecto;
-		int maxNumCoord, indexTrayectoBase;
-		ArrayList<Trajectory> nuevosTrayectos;
+	public static Trajectory aggregateCentroids(ArrayList<Trajectory>trajectories) {
+		Trajectory trajectory, newTrajectory, baseTrajectory;
+		int maxNumCoord, indexTrajectoryBase;
+		ArrayList<Trajectory> newTrajectories;
 		ArrayList<Coordinate2>aggregatedCoords;
-		ArrayList<Coordinate2>coordenadas;
+		ArrayList<Coordinate2>coordinates;
 		
 		//Calculate accumulated distance based on centroids
-		for(Trajectory t:trayectos) {
-			t.calculateAcumulatedDistanceInCentroidsCuadriculas();
+		for(Trajectory t:trajectories) {
+			t.calculateAcumulatedDistanceInCentroidsQuadrants();
 		}
 		
 		//First convert the smallest trajectories
 		//in order to have the same number of coordinates than the greatest trajectory
-		baseTrayecto = trayectos.get(0);
-		maxNumCoord = indexTrayectoBase = 0;
-		for(int i=0; i<trayectos.size(); i++) {
-			trayecto = trayectos.get(i);
-			if(trayecto.centroidsQuadrants.size() > maxNumCoord) {
-				maxNumCoord = trayecto.coordinate.size();
-				baseTrayecto = trayecto;
-				indexTrayectoBase = i;
+		baseTrajectory = trajectories.get(0);
+		maxNumCoord = indexTrajectoryBase = 0;
+		for(int i=0; i<trajectories.size(); i++) {
+			trajectory = trajectories.get(i);
+			if(trajectory.centroidsQuadrants.size() > maxNumCoord) {
+				maxNumCoord = trajectory.coordinate.size();
+				baseTrajectory = trajectory;
+				indexTrajectoryBase = i;
 			}
 		}
 
-		nuevosTrayectos = new ArrayList<Trajectory>();
+		newTrajectories = new ArrayList<Trajectory>();
 		//The normalized coordinates of the base trajectory do not change
-		baseTrayecto.coordinateNormalized = baseTrayecto.centroidsQuadrants;
-		nuevosTrayectos.add(baseTrayecto);
-		for(int i=0; i<trayectos.size(); i++) {
-			if(indexTrayectoBase != i) {
-				trayecto = trayectos.get(i);
-				nuevoTrayecto = baseTrayecto.convertCentroidsCuadriculas(trayecto);
-				trayecto.coordinateNormalized = nuevoTrayecto.coordinate;
-				nuevoTrayecto.centroidsQuadrants = nuevoTrayecto.coordinate;
-				nuevosTrayectos.add(nuevoTrayecto);
+		baseTrajectory.coordinateNormalized = baseTrajectory.centroidsQuadrants;
+		newTrajectories.add(baseTrajectory);
+		for(int i=0; i<trajectories.size(); i++) {
+			if(indexTrajectoryBase != i) {
+				trajectory = trajectories.get(i);
+				newTrajectory = baseTrajectory.convertCentroidsQuadrants(trajectory);
+				trajectory.coordinateNormalized = newTrajectory.coordinate;
+				newTrajectory.centroidsQuadrants = newTrajectory.coordinate;
+				newTrajectories.add(newTrajectory);
 			}
 		}
 
-		coordenadas = new ArrayList<Coordinate2>();
+		coordinates = new ArrayList<Coordinate2>();
 		aggregatedCoords = new ArrayList<Coordinate2>();
-		for(int i=0; i<baseTrayecto.centroidsQuadrants.size(); i++) {
-			for(int j=0; j<nuevosTrayectos.size(); j++) {
-				trayecto = nuevosTrayectos.get(j);
-				coordenadas.add(trayecto.centroidsQuadrants.get(j));
+		for(int i=0; i<baseTrajectory.centroidsQuadrants.size(); i++) {
+			for(int j=0; j<newTrajectories.size(); j++) {
+				trajectory = newTrajectories.get(j);
+				coordinates.add(trajectory.centroidsQuadrants.get(j));
 			}
-			aggregatedCoords.add(Coordinate2.calculateCentroid(coordenadas));
-			coordenadas.clear();
+			aggregatedCoords.add(Coordinate2.calculateCentroid(coordinates));
+			coordinates.clear();
 		}
 		
 		return new Trajectory(aggregatedCoords, true, "", 0);
 	}
 	
-	public static Trajectory aggregateCoordinatesAnt(ArrayList<Trajectory>trayectos) {
-		int numCoordenadasNew;
+	public static Trajectory aggregateCoordinatesAnt(ArrayList<Trajectory>trajectories) {
+		int numCoordinatesNew;
 		double gap[];
 		double index[];
 		ArrayList<Coordinate2>aggregatedCoords;
-		ArrayList<Coordinate2>coordenadas;
-		Trajectory trayecto;
+		ArrayList<Coordinate2>coordinates;
+		Trajectory trajectory;
 		int indexInt;
 		double velocity;
 		
-		numCoordenadasNew = 0;
+		numCoordinatesNew = 0;
 		velocity = 0.0;
-		for(Trajectory t:trayectos) {
-			numCoordenadasNew += t.coordinate.size();
+		for(Trajectory t:trajectories) {
+			numCoordinatesNew += t.coordinate.size();
 			velocity += t.velocity;
 		}
-		velocity /= trayectos.size();
-		numCoordenadasNew = (int) Math.round((double)numCoordenadasNew / (double)trayectos.size());
-		gap = new double[trayectos.size()];
-		for(int i=0; i<trayectos.size(); i++) {
-			trayecto = trayectos.get(i);
-			gap[i] = (double)trayecto.coordinate.size() / (double)numCoordenadasNew;
+		velocity /= trajectories.size();
+		numCoordinatesNew = (int) Math.round((double)numCoordinatesNew / (double)trajectories.size());
+		gap = new double[trajectories.size()];
+		for(int i=0; i<trajectories.size(); i++) {
+			trajectory = trajectories.get(i);
+			gap[i] = (double)trajectory.coordinate.size() / (double)numCoordinatesNew;
 		}
 		
-		coordenadas = new ArrayList<Coordinate2>();
+		coordinates = new ArrayList<Coordinate2>();
 		aggregatedCoords = new ArrayList<Coordinate2>();
-		index = new double[trayectos.size()];
-		for(int i=0; i<numCoordenadasNew; i++) {
-			for(int j=0; j<trayectos.size(); j++) {
-				trayecto = trayectos.get(j);
+		index = new double[trajectories.size()];
+		for(int i=0; i<numCoordinatesNew; i++) {
+			for(int j=0; j<trajectories.size(); j++) {
+				trajectory = trajectories.get(j);
 				indexInt = (int) Math.round(index[j]);
-				if(indexInt >= trayecto.coordinate.size()) {
-					indexInt = trayecto.coordinate.size()-1;
+				if(indexInt >= trajectory.coordinate.size()) {
+					indexInt = trajectory.coordinate.size()-1;
 				}
-				coordenadas.add(trayecto.coordinate.get(indexInt));
+				coordinates.add(trajectory.coordinate.get(indexInt));
 			}
-			aggregatedCoords.add(Coordinate2.calculateCentroid(coordenadas));
-			coordenadas.clear();
-			for(int j=0; j<trayectos.size(); j++) {
+			aggregatedCoords.add(Coordinate2.calculateCentroid(coordinates));
+			coordinates.clear();
+			for(int j=0; j<trajectories.size(); j++) {
 				index[j] += gap[j];
 			}
 		}
 		
-		trayecto = new Trajectory(aggregatedCoords, true, "", 0);
-		trayecto.velocityAnom = velocity;
+		trajectory = new Trajectory(aggregatedCoords, true, "", 0);
+		trajectory.velocityAnom = velocity;
 		
-		return trayecto;
+		return trajectory;
 	}
 	
-	public static Trajectory aggregateInterpolatedAnt(ArrayList<Trajectory>trayectos) {
-		int numCoordenadasNew;
+	public static Trajectory aggregateInterpolatedAnt(ArrayList<Trajectory>trajectories) {
+		int numCoordinatesNew;
 		double gap[];
 		double index[];
 		ArrayList<Coordinate2>aggregatedCoords;
-		ArrayList<Coordinate2>coordenadas;
-		Trajectory trayecto;
+		ArrayList<Coordinate2>coordinates;
+		Trajectory trajectory;
 		int indexInt;
 		double velocity;
 		
-		numCoordenadasNew = 0;
+		numCoordinatesNew = 0;
 		velocity = 0.0;
-		for(Trajectory t:trayectos) {
-			numCoordenadasNew += t.coordinatesInterpolated.size();
+		for(Trajectory t:trajectories) {
+			numCoordinatesNew += t.coordinatesInterpolated.size();
 			velocity += t.velocity;
 		}
-		velocity /= trayectos.size();
-		numCoordenadasNew = (int) Math.round((double)numCoordenadasNew / (double)trayectos.size());
-		gap = new double[trayectos.size()];
-		for(int i=0; i<trayectos.size(); i++) {
-			trayecto = trayectos.get(i);
-			gap[i] = (double)trayecto.coordinatesInterpolated.size() / (double)numCoordenadasNew;
+		velocity /= trajectories.size();
+		numCoordinatesNew = (int) Math.round((double)numCoordinatesNew / (double)trajectories.size());
+		gap = new double[trajectories.size()];
+		for(int i=0; i<trajectories.size(); i++) {
+			trajectory = trajectories.get(i);
+			gap[i] = (double)trajectory.coordinatesInterpolated.size() / (double)numCoordinatesNew;
 		}
 		
-		coordenadas = new ArrayList<Coordinate2>();
+		coordinates = new ArrayList<Coordinate2>();
 		aggregatedCoords = new ArrayList<Coordinate2>();
-		index = new double[trayectos.size()];
-		for(int i=0; i<numCoordenadasNew; i++) {
-			for(int j=0; j<trayectos.size(); j++) {
-				trayecto = trayectos.get(j);
+		index = new double[trajectories.size()];
+		for(int i=0; i<numCoordinatesNew; i++) {
+			for(int j=0; j<trajectories.size(); j++) {
+				trajectory = trajectories.get(j);
 				indexInt = (int) Math.round(index[j]);
-				if(indexInt >= trayecto.coordinatesInterpolated.size()) {
-					indexInt = trayecto.coordinatesInterpolated.size()-1;
+				if(indexInt >= trajectory.coordinatesInterpolated.size()) {
+					indexInt = trajectory.coordinatesInterpolated.size()-1;
 				}
-				coordenadas.add(trayecto.coordinatesInterpolated.get(indexInt));
+				coordinates.add(trajectory.coordinatesInterpolated.get(indexInt));
 			}
-			aggregatedCoords.add(Coordinate2.calculateCentroid(coordenadas));
-			coordenadas.clear();
-			for(int j=0; j<trayectos.size(); j++) {
+			aggregatedCoords.add(Coordinate2.calculateCentroid(coordinates));
+			coordinates.clear();
+			for(int j=0; j<trajectories.size(); j++) {
 				index[j] += gap[j];
 			}
 		}
 		
-		trayecto = new Trajectory(aggregatedCoords, true, "", 0);
-		trayecto.velocityAnom = velocity;
+		trajectory = new Trajectory(aggregatedCoords, true, "", 0);
+		trajectory.velocityAnom = velocity;
 		
-		return trayecto;
+		return trajectory;
 	}
 	
-	public static Trajectory aggregateCentroidsAnt(ArrayList<Trajectory>trayectos) {
-		int numCoordenadasNew;
+	public static Trajectory aggregateCentroidsAnt(ArrayList<Trajectory>trajectories) {
+		int numCoordinatesNew;
 		double gap[];
 		double index[];
 		ArrayList<Coordinate2>aggregatedCoords;
-		ArrayList<Coordinate2>coordenadas;
-		Trajectory trayecto;
+		ArrayList<Coordinate2>coordinates;
+		Trajectory trajectory;
 		int indexInt;
 		double velocity;
 		
-		numCoordenadasNew = 0;
+		numCoordinatesNew = 0;
 		velocity = 0.0;
-		for(Trajectory t:trayectos) {
-			numCoordenadasNew += t.centroidsQuadrants.size();
+		for(Trajectory t:trajectories) {
+			numCoordinatesNew += t.centroidsQuadrants.size();
 			velocity += t.velocity;
 		}
-		velocity /= trayectos.size();
-		numCoordenadasNew = (int) Math.round((double)numCoordenadasNew / (double)trayectos.size());
-		gap = new double[trayectos.size()];
-		for(int i=0; i<trayectos.size(); i++) {
-			trayecto = trayectos.get(i);
-			gap[i] = (double)trayecto.centroidsQuadrants.size() / (double)numCoordenadasNew;
+		velocity /= trajectories.size();
+		numCoordinatesNew = (int) Math.round((double)numCoordinatesNew / (double)trajectories.size());
+		gap = new double[trajectories.size()];
+		for(int i=0; i<trajectories.size(); i++) {
+			trajectory = trajectories.get(i);
+			gap[i] = (double)trajectory.centroidsQuadrants.size() / (double)numCoordinatesNew;
 		}
 		
-		coordenadas = new ArrayList<Coordinate2>();
+		coordinates = new ArrayList<Coordinate2>();
 		aggregatedCoords = new ArrayList<Coordinate2>();
-		index = new double[trayectos.size()];
-		for(int i=0; i<numCoordenadasNew; i++) {
-			for(int j=0; j<trayectos.size(); j++) {
-				trayecto = trayectos.get(j);
+		index = new double[trajectories.size()];
+		for(int i=0; i<numCoordinatesNew; i++) {
+			for(int j=0; j<trajectories.size(); j++) {
+				trajectory = trajectories.get(j);
 				indexInt = (int) Math.round(index[j]);
-				if(indexInt >= trayecto.centroidsQuadrants.size()) {
-					indexInt = trayecto.centroidsQuadrants.size()-1;
+				if(indexInt >= trajectory.centroidsQuadrants.size()) {
+					indexInt = trajectory.centroidsQuadrants.size()-1;
 				}
-				coordenadas.add(trayecto.centroidsQuadrants.get(indexInt));
+				coordinates.add(trajectory.centroidsQuadrants.get(indexInt));
 			}
-			aggregatedCoords.add(Coordinate2.calculateCentroid(coordenadas));
-			coordenadas.clear();
-			for(int j=0; j<trayectos.size(); j++) {
+			aggregatedCoords.add(Coordinate2.calculateCentroid(coordinates));
+			coordinates.clear();
+			for(int j=0; j<trajectories.size(); j++) {
 				index[j] += gap[j];
 			}
 		}
 		
-		trayecto = new Trajectory(aggregatedCoords, true, "", 0);
-		trayecto.velocityAnom = velocity;
+		trajectory = new Trajectory(aggregatedCoords, true, "", 0);
+		trajectory.velocityAnom = velocity;
 		
-		return trayecto;
+		return trajectory;
 	}
 	
 	public Trajectory aggregate(Trajectory other) {
-		int numCoordenadasNew, indexInt;
+		int numCoordinatesNew, indexInt;
 		double gapThis, gapOther, indexThis, indexOther;
-		Coordinate2 coordenadaThis, coordenadaOther, coordenadaAggregated;
+		Coordinate2 coordinateThis, coordinateOther, coordinateAggregated;
 		ArrayList<Coordinate2>aggregatedCoords;
 		Trajectory aggregated;
 		double velocity;
 		
-		numCoordenadasNew = (int) Math.round(((double)this.coordinate.size() + (double)other.coordinate.size()) / 2.0);
+		numCoordinatesNew = (int) Math.round(((double)this.coordinate.size() + (double)other.coordinate.size()) / 2.0);
 		velocity = (this.velocity + other.velocity) / 2;
-		gapThis = (double)this.coordinate.size() / (double)numCoordenadasNew;
-		gapOther = (double)other.coordinate.size() / (double)numCoordenadasNew;
+		gapThis = (double)this.coordinate.size() / (double)numCoordinatesNew;
+		gapOther = (double)other.coordinate.size() / (double)numCoordinatesNew;
 		
 		aggregatedCoords = new ArrayList<Coordinate2>();
 		indexThis = indexOther = 0;
-		for(int i=0; i<numCoordenadasNew; i++) {
+		for(int i=0; i<numCoordinatesNew; i++) {
 			indexInt = (int) Math.round(indexThis);
 			if(indexInt >= this.coordinate.size()) {
 				indexInt = this.coordinate.size()-1;
 			}
-			coordenadaThis = this.coordinate.get(indexInt);
+			coordinateThis = this.coordinate.get(indexInt);
 			indexInt = (int) Math.round(indexOther);
 			if(indexInt >= other.coordinate.size()) {
 				indexInt = other.coordinate.size()-1;
 			}
-			coordenadaOther = other.coordinate.get(indexInt);
-			coordenadaAggregated = coordenadaThis.aggregate(coordenadaOther);
-			aggregatedCoords.add(coordenadaAggregated);
+			coordinateOther = other.coordinate.get(indexInt);
+			coordinateAggregated = coordinateThis.aggregate(coordinateOther);
+			aggregatedCoords.add(coordinateAggregated);
 			indexThis += gapThis;
 			indexOther += gapOther;
 		}

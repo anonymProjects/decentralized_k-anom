@@ -1067,7 +1067,7 @@ public class Peer {
 		
 		lat = (GridGenerator2.topLeftCoordinate.latitude + GridGenerator2.botRightCoordinate.latitude) / 2;
 		lon = (GridGenerator2.topLeftCoordinate.longitude + GridGenerator2.botRightCoordinate.longitude) / 2;
-		time = peers.get(0).trajectory.getTiempoInicio();
+		time = peers.get(0).trajectory.getTimeInitial();
 		calendar.setTimeZone(TimeZone.getTimeZone("America/Los_Angeles"));
 		timestamp = new Timestamp(time*1000);
 		calendar.setTimeInMillis(timestamp.getTime());
