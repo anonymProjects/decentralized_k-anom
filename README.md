@@ -1,5 +1,17 @@
 # imcd21Project
 
+## Decentralized k-Anonymization of Trajectories via Tit-for-Tat.
+
+Repository for ICDM (21th Industrial Conference on Data Mining) 2021 submission.
+This repository contains the code used in the experiments for the anonymization of a data set of trajectories applying the following methods:
+  * Centralized microaggregation
+  * Decentralized microagregation sending:
+    * Trajectory
+    * Centroid
+
+The metrics calculated are:
+  * Mean RMSE (utility of the anonymized data set)
+  * Mean number of messages (network overhead)
 
 
 ## Installing
@@ -18,7 +30,6 @@ To run, access the folder ['src'](https://github.com/anonymProjects/imcd21Projec
 Main1.java
 ```
 Executes the centralized microaggregation of the cabs dataset, obtaining the resulting RMSE for k values from 2 to 100 (Fig. 1):
-
 
 | k   | Mean RMSE |
 | --- | --------- |
@@ -103,3 +114,43 @@ Executes the decentralized microaggregation (centroid) of the cabs dataset, obta
 | 90  | 2617.526  | 43.599                   |
 | 95  | 2658.882  | 45.743                   |
 | 100 | 2695.587  | 51.680                   |
+
+```
+Main4.java
+```
+Executes the decentralized microaggregation (trajectory) of the cabs dataset, obtaining the resulting RMSE and the mean number of messages per peer, varying the % of bad peers in the system in the range from 0.0% to 10.0% (Fig. 6). The RMSE is calculated distinguishing between good and bad peers (Fig. 7):
+
+
+| % Bad peers | Mean # messages per peer | Mean RMSE good peers | Mean RMSE bad peers |
+| ----------- | ------------------------ | ---------------------| --------------------|
+| 0.0         | 5.565                    | 1519.945             | N/A                 |
+| 1.0         | 79.443                   | 1520.709             | 1668.581            |
+| 2.0         | 153.343                  | 1520.195             | 1677.454            |
+| 3.0         | 212.513                  | 1515.542             | 1679.122            |
+| 4.0         | 298.921                  | 1516.041             | 1682.642            |
+| 5.0         | 341.475                  | 1512.926             | 1687.919            |
+| 6.0         | 442.360                  | 1512.218             | 1692.205            |
+| 7.0         | 517.867                  | 1513.316             | 1685.431            |
+| 8.0         | 571.350                  | 1508.649             | 1681.033            |
+| 9.0         | 681.607                  | 1506.259             | 1692.745            |
+| 10.0        | 750.995                  | 1506.365             | 1689.458            |
+
+```
+Main5.java
+```
+Executes the decentralized microaggregation (centroid) of the cabs dataset, obtaining the mean number of messages per peer, varying the % of bad peers in the system in the range from 0.0% to 10.0% (Fig. 6):
+
+
+| % Bad peers | Mean # messages per peer |
+| ----------- | ------------------------ |
+| 0.0         | 15.108                   |
+| 1.0         | 98.528                   |
+| 2.0         | 163.111                  |
+| 3.0         | 237.152                  |
+| 4.0         | 310.758                  |
+| 5.0         | 387.424                  |
+| 6.0         | 452.489                  |
+| 7.0         | 530.937                  |
+| 8.0         | 617.439                  |
+| 9.0         | 714.774                  |
+| 10.0        | 763.091                  |
