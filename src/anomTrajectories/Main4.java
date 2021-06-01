@@ -40,7 +40,7 @@ public class Main4 {
 		Functions.calculateMeanNumTypicalDeviationCoordinatesByTrajectory(trajectories);
 		peers = Functions.createListPeers(trajectories, 0);
 		
-		numRunnings = 6;
+		numRunnings = 5;
 		for(int i=0; i<numRunnings; i++) {
 			results.add(new ArrayList<Result>());
 			interpolated = false;
