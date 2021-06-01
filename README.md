@@ -1,4 +1,4 @@
-# imcd21Project
+# icdm21Project
 
 ## Decentralized k-Anonymization of Trajectories via Tit-for-Tat.
 
