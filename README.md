@@ -29,7 +29,7 @@ To run, access the folder ['src'](https://github.com/anonymProjects/imcd21Projec
 ```
 Main1.java
 ```
-Executes the centralized microaggregation of the cabs dataset, obtaining the resulting RMSE for k values from 2 to 100 (Fig. 1):
+Executes the centralized microaggregation of the cabs dataset, obtaining the resulting RMSE for k values from 2 to 100 (Fig. 4):
 
 | k   | Mean RMSE |
 | --- | --------- |
