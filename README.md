@@ -1,8 +1,5 @@
-# icdm21Project
+# Decentralized k-Anonymization of Trajectories via Tit-for-Tat.
 
-## Decentralized k-Anonymization of Trajectories via Tit-for-Tat.
-
-Repository for ICDM (21th Industrial Conference on Data Mining) 2021 submission.
 This repository contains the code used in the experiments for the anonymization of a data set of trajectories applying the following methods:
   * Centralized microaggregation
   * Decentralized microagregation sending:
@@ -20,12 +17,12 @@ The computer should fulfill the following requirements:
 * At least 4 GB of RAM are recommended.
 
 ## Code
-The source code is available in this repository inside the ['src'](https://github.com/anonymProjects/imcd21Project/tree/master/src/anomTrajectories) folder.
+The source code is available in this repository inside the ['src'](https://github.com/anonymProjects/decentralized_k-anom/tree/master/src/anomTrajectories) folder.
 
-The source code can be imported to Java IDEs (e.g. Eclipse) by cloning or downloading the project from the [main page](https://github.com/anonymProjects/imcd21Project) on github.
+The source code can be imported to Java IDEs (e.g. Eclipse) by cloning or downloading the project from the [main page](https://github.com/anonymProjects/decentralized_k-anom) on github.
 
 ## Running
-To run, access the folder ['src'](https://github.com/anonymProjects/imcd21Project/tree/master/src/anomTrajectories) and execute the following tests to obtain the described results:
+To run, access the folder ['src'](https://github.com/anonymProjects/decentralized_k-anom/tree/master/src/anomTrajectories) and execute the following tests to obtain the described results:
 ```
 Main1.java
 ```
